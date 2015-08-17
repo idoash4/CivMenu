@@ -1,0 +1,16 @@
+name: CivMenu
+main: vg.civcraft.mc.civmenu.CivMenu
+version: 0.1
+author: BlackXnt and Maxopoly
+commands:
+  help:
+    description: a
+    aliases: [help]
+    permission: CivMenu.*
+    usage: /help plugin
+  sign:
+    description: sign
+    aliases: [sign]
+    permission: CivMenu.*
+    usage: /sign
+ 
