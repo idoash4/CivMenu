@@ -24,7 +24,8 @@ public class TOSManager {
 	public TOSManager(CivMenu plugin) {
 		this.plugin = plugin;
 		registeredPlayers = new TreeMap<UUID, Long>();
-		logFile = new File("registeredPlayers.txt");
+		new File("plugins/CivMenu").mkdirs(); //this should already exist, but we do this anyway to make sure
+		logFile = new File("plugins/CivMenu/registeredPlayers.txt");
 		parseLogFile();
 	}
 	
