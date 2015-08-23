@@ -59,7 +59,7 @@ public class TOSListener implements Listener {
 				"http://google.com")); // TODO TODO TODO change to wherever the
 										// tos are
 		TextComponent confirm = new TextComponent("Once you've read it, you can click this message to agree to the terms");
-		confirm.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/sign"));  //TODO
+		confirm.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/sign"));
 		menu.setParts(click, confirm);
 		
 		p.spigot().sendMessage(menu.create());

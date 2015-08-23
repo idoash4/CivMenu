@@ -36,10 +36,6 @@ public class CommandHandler implements CommandExecutor{
 			return false;
 		}
 		
-		Player player = (Player) sender;
-		player.sendMessage("hey");
-		System.out.println("s");
-		
 		return true;
 	}
 
@@ -48,7 +44,6 @@ public class CommandHandler implements CommandExecutor{
 		if(!(sender instanceof Player)){
 			return false;
 		}
-		((Player)sender).sendMessage("d");
 		if(TOSManager.addPlayer((Player)sender)){
 			((Player)sender).sendMessage("Thank you for signing the terms of service");
 			return true;
