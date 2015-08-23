@@ -1,46 +1,66 @@
 package vg.civcraft.mc.civmenu;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 
+import vg.civcraft.mc.civmodcore.annotations.CivConfig;
+import vg.civcraft.mc.civmodcore.annotations.CivConfigType;
+import vg.civcraft.mc.civmodcore.annotations.CivConfigs;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.ClickEvent;
 
 public class TOSListener implements Listener {
+	
+	private CivMenu plugin = CivMenu.getInstance();
+	
+	public TOSListener() {
+		
+	}
+	
 	@EventHandler
 	public void playerJoinEvent(PlayerJoinEvent event) {
 		Player p = event.getPlayer();
-		if (p != null) {
-			if (!TOSManager.registeredPlayers
-					.containsKey(p.getUniqueId())) {
-				sendTOS(p);
-			}
+		if (!TOSManager.registeredPlayers
+				.containsKey(p.getUniqueId())) {
+			sendTOS(p);
 		}
 	}
 	
 	@EventHandler
 	public void playerMoveEvent(PlayerMoveEvent event){
+		Location from = event.getFrom();
+        Location to = event.getTo();
+
+        if (from.getBlockX() == to.getBlockX()
+                && from.getBlockY() == to.getBlockY()
+                && from.getBlockZ() == to.getBlockZ()
+                && from.getWorld().equals(to.getWorld())) {
+            // Player didn't move by at least one block.
+            return;
+        }
 		Player p = event.getPlayer();
-		if (p != null) {
-			if (!TOSManager.registeredPlayers
-					.containsKey(p.getUniqueId())) {
-				if (((event.getTo().getX() != event.getFrom().getX()) || (event.getTo().getZ() != event.getFrom().getZ()))) {
-					event.setTo(event.getFrom());
-		        }
-				sendTOS(p);
-				return;
-			}
+		if (!TOSManager.registeredPlayers.containsKey(p.getUniqueId())) {
+			p.sendMessage(ChatColor.RED + "You must accept the terms in order to play.");
+			sendTOS(p);
+			event.setCancelled(true);
 		}
 	}
 	
+	@CivConfigs({
+		@CivConfig(name = "terms.link", def = "google.com", type = CivConfigType.String),
+		@CivConfig(name = "terms.message", def = "You can click this message to open up the terms of service.", type = CivConfigType.String)
+	})
 	public void sendTOS(Player p) {
-		if (p == null) {
-			return;
-		}
 		
 		Menu menu = new Menu();
 		
@@ -50,14 +70,13 @@ public class TOSListener implements Listener {
 		menu.setTitle(welcome);
 
 		TextComponent agree = new TextComponent(
-				"To be able to play, you need to read our terms of service first and agree to those");
+				plugin.GetConfig().get("terms.message").getString());
 		menu.setSubTitle(agree);
 		
 		TextComponent click = new TextComponent(
-				"You can click this message to open up the terms of service");
+				);
 		click.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL,
-				"http://google.com")); // TODO TODO TODO change to wherever the
-										// tos are
+				plugin.GetConfig().get("terms.link").getString()));
 		TextComponent confirm = new TextComponent("Once you've read it, you can click this message to agree to the terms");
 		confirm.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/sign"));
 		menu.setParts(click, confirm);

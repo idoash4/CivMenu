@@ -11,14 +11,18 @@ import org.bukkit.help.HelpTopic;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
-public class CivMenu extends JavaPlugin {
+import vg.civcraft.mc.civmodcore.ACivMod;
+
+public class CivMenu extends ACivMod {
 	
 	private TOSManager tosManager;
+	private static CivMenu plugin;
 	
 	public void onEnable() {
+		super.onEnable();
+		plugin = this;
 		tosManager = new TOSManager(this);
 		getServer().getPluginManager().registerEvents(new TOSListener(), this);
-		
 		
 		//THIS SHOULDN'T BE HERE
 //		CommandHandler commandHandler = new CommandHandler(this);
@@ -37,12 +41,25 @@ public class CivMenu extends JavaPlugin {
 //		}
 	}
 	
+	public void onLoad() {
+		super.onLoad();
+	}
+	
     public void onDisable() { 
-
+    	
     }
 
 	public TOSManager getTosManager() {
 		return tosManager;
+	}
+
+	@Override
+	protected String getPluginName() {
+		return "CivMenu";
+	}
+	
+	public static CivMenu getInstance() {
+		return plugin;
 	}
     
 }
