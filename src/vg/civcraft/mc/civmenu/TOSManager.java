@@ -24,8 +24,15 @@ public class TOSManager {
 	public TOSManager(CivMenu plugin) {
 		this.plugin = plugin;
 		registeredPlayers = new TreeMap<UUID, Long>();
-		new File("plugins/CivMenu").mkdirs(); //this should already exist, but we do this anyway to make sure
-		logFile = new File("plugins/CivMenu/registeredPlayers.txt");
+		
+		logFile = new File(plugin.getDataFolder().getPath(), "registeredPlayers.txt");
+		if (!logFile.exists())
+			try {
+				logFile.createNewFile();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		parseLogFile();
 	}
 	

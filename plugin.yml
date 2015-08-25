@@ -1,15 +1,16 @@
 name: CivMenu
 main: vg.civcraft.mc.civmenu.CivMenu
 version: 0.1
-author: BlackXnt and Maxopoly
+author: ['BlackXnt', 'Maxopoly', 'Rourke750']
+depends: ['CivModCore']
 commands:
   help:
-    description: a
+    description: Help command.
     aliases: [help]
     permission: CivMenu.*
     usage: /help plugin
   sign:
-    description: sign
+    description: Command to sign agreement.
     aliases: [sign]
     permission: CivMenu.*
     usage: /sign
