@@ -51,8 +51,9 @@ public class TOSListener implements Listener {
 	}
 
 	@CivConfigs({
-			@CivConfig(name = "terms.link", def = "http://www.google.com", type = CivConfigType.String),
-			@CivConfig(name = "terms.message", def = "You can click this message to open up the terms of service.", type = CivConfigType.String) })
+		@CivConfig(name = "terms.link", def = "http://www.google.com", type = CivConfigType.String),
+		@CivConfig(name = "terms.message", def = "You can click this message to open up the terms of service.", type = CivConfigType.String) 
+	})
 	public void sendTOS(Player p) {
 
 		Menu menu = new Menu();

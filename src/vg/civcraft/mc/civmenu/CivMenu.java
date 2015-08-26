@@ -39,12 +39,12 @@ public class CivMenu extends ACivMod {
 
     public void SendHelpMenu(Player player, JavaPlugin plugin){
     	Menu menu = new Menu();
+    	
 		menu.setTitle(new TextComponent(plugin.getName()));
-		System.out.println(plugin.getName());
+
 		if(plugin.getDescription().getDescription()!=null){
 			menu.setSubTitle(new TextComponent(plugin.getDescription().getDescription()));
 		}
-		System.out.println(plugin.getDescription().getDescription());
 		
     	for (String commandName : plugin.getDescription().getCommands().keySet()) {
     		Command command = plugin.getCommand(commandName);
