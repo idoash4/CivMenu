@@ -25,9 +25,10 @@ public class TOSManager {
 		this.plugin = plugin;
 		registeredPlayers = new TreeMap<UUID, Long>();
 		
-		logFile = new File(plugin.getDataFolder().getPath(), "registeredPlayers.txt");
+		logFile = new File(plugin.getDataFolder().getAbsolutePath(), "registeredPlayers.txt");
 		if (!logFile.exists())
 			try {
+				plugin.getLogger().log(Level.WARNING, "File not found, so no data about people who accepted the TOS before was created");
 				logFile.createNewFile();
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
@@ -40,7 +41,7 @@ public class TOSManager {
 	        String line = null;
 	        try {
 	            FileReader fileReader = 
-	                new FileReader(logFile.getName());
+	                new FileReader(logFile);
 	            BufferedReader bufferedReader = 
 	                new BufferedReader(fileReader);
 
