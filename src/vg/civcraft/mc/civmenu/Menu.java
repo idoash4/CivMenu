@@ -1,7 +1,6 @@
 package vg.civcraft.mc.civmenu;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import net.md_5.bungee.api.chat.TextComponent;

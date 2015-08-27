@@ -1,11 +1,16 @@
 package vg.civcraft.mc.civmenu;
 
+import java.util.Map;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
+
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import vg.civcraft.mc.civmodcore.annotations.CivConfig;
 import vg.civcraft.mc.civmodcore.annotations.CivConfigType;
@@ -17,36 +22,46 @@ import net.md_5.bungee.api.chat.ClickEvent;
 public class TOSListener implements Listener {
 
 	private CivMenu plugin = CivMenu.getInstance();
+	private Map<UUID, Location> locations;
 
 	public TOSListener() {
-
+		locations = new ConcurrentHashMap<UUID, Location>();
 	}
-
+	
+	@CivConfigs({
+		@CivConfig(name = "terms.kickDelay", def = "6000", type = CivConfigType.Int),
+		@CivConfig(name = "terms.kickMessage", def = "You must accept the terms in order to play", type = CivConfigType.String)
+	})
 	@EventHandler
 	public void playerJoinEvent(PlayerJoinEvent event) {
-		Player p = event.getPlayer();
+		final Player p = event.getPlayer();
 		if (!TOSManager.registeredPlayers.containsKey(p.getUniqueId())) {
 			sendTOS(p);
+			locations.put(p.getUniqueId(), p.getLocation());
+			new BukkitRunnable() {
+				
+				@Override
+				public void run() {
+					locations.remove(p.getUniqueId());
+					if(!TOSManager.registeredPlayers.containsKey(p.getUniqueId())){
+						p.kickPlayer(plugin.GetConfig().get("terms.kickMessage").getString());
+					}
+					
+				}
+			}.runTaskLater(this.plugin, plugin.GetConfig().get("terms.kickDelay").getInt());
 		}
 	}
-
+	
+	@CivConfig(name = "terms.MovementRange", def = "15", type = CivConfigType.Int)
 	@EventHandler
 	public void playerMoveEvent(PlayerMoveEvent event) {
-		Location from = event.getFrom();
-        Location to = event.getTo();
-
-        if (from.getBlockX() == to.getBlockX()
-                && from.getBlockZ() == to.getBlockZ()
-                && from.getWorld().equals(to.getWorld())) {
-            // Player didn't move by at least one block.
-            return;
-        }
-		
 		Player p = event.getPlayer();
 		if (!TOSManager.registeredPlayers.containsKey(p.getUniqueId())) {
-			p.sendMessage(ChatColor.RED + "You must accept the terms in order to play.");
-			sendTOS(p);
-			event.setTo(event.getFrom());
+			if(event.getTo().distance(locations.get(p.getUniqueId())) > plugin.GetConfig().get("terms.MovementRange").getInt()){
+				p.sendMessage(ChatColor.RED + "You must accept the terms in order to play.");
+				sendTOS(p);
+				event.setTo(locations.get(p.getUniqueId()));
+			}
 		}
 	}
 
