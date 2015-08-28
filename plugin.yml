@@ -14,4 +14,7 @@ commands:
     aliases: [sign]
     permission: CivMenu.*
     usage: /sign
- 
+permissions:
+    CivMenu.*:
+      description: Gives access to /sign and /help
+      default: true
