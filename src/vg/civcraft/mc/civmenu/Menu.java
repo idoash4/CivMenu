@@ -3,14 +3,6 @@ package vg.civcraft.mc.civmenu;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.bukkit.entity.Player;
-import org.bukkit.help.HelpTopic;
-
-import net.md_5.bungee.api.chat.BaseComponent;
-import net.md_5.bungee.api.chat.ClickEvent;
-import net.md_5.bungee.api.chat.ComponentBuilder;
-import net.md_5.bungee.api.chat.HoverEvent;
-import net.md_5.bungee.api.chat.HoverEvent.Action;
 import net.md_5.bungee.api.chat.TextComponent;
 
 public class Menu {
@@ -19,11 +11,15 @@ public class Menu {
 	List<TextComponent> parts;
 	
 	public Menu(){
-		title = new TextComponent();
-		subTitle = new TextComponent();
+		title = new TextComponent("");
+		subTitle = new TextComponent("");
 		parts = new ArrayList<TextComponent>();
 	}
 	
+	/**
+	 * Returns the title
+	 * @return Returns the TextComponent of the title.
+	 */
 	public TextComponent getTitle() {
 		return title;
 	}
@@ -44,32 +40,32 @@ public class Menu {
 		return parts;
 	}
 
+	public void addPart(TextComponent part){
+		parts.add(part);
+	}
+	
 	public void setParts(TextComponent... parts){
 		for(TextComponent part:parts){
 			this.parts.add(part);
 		}
 	}
 	
-	
-	public void setParts(List<HelpTopic> parts) {
-		for (HelpTopic ht : parts) {
-			TextComponent text = new TextComponent(ht.getName());
-			TextComponent[] tc = { new TextComponent(ht.getShortText()) };
-			text.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, tc));
-			text.setClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, ht.getName()));
-			this.parts.add(text);
-		}
-	}
-
-
-	
 	public TextComponent create(){
-		TextComponent menu = new TextComponent();
-		menu.addExtra(title);
-		menu.addExtra(subTitle);
-		for(TextComponent text: parts){
-			menu.addExtra(text);
+		TextComponent menu = new TextComponent(title);
+		menu.addExtra("\n");
+		
+		if(subTitle.getText()!= ""){
+			menu.addExtra(subTitle);
+			menu.addExtra("\n");
 		}
+		
+		for(int i = 0; i<parts.size(); i++){
+			menu.addExtra(parts.get(i));
+			if(i != parts.size() - 1){
+				menu.addExtra(", ");
+			}
+		}
+		
 		return menu;
 	}
 }
