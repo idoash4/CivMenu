@@ -28,7 +28,7 @@ public class TOSManager {
 	}
 	
 	@CivConfigs({
-		@CivConfig(name = "save.manager", def = "0 # Use 0 for flatfile, 1 for mysql.", type = CivConfigType.String)
+		@CivConfig(name = "save.manager", def = "0 # Use 0 for flatfile, 1 for mysql.", type = CivConfigType.Int)
 	})
 	private void handleWriteManagerment() {
 		switch (config.get("save.manager").getInt()) {

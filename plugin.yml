@@ -1,6 +1,6 @@
-name: CivMenu
+name: ${project.name}
 main: vg.civcraft.mc.civmenu.CivMenu
-version: 0.1
+version: ${project.version}
 author: ['BlackXnt', 'Maxopoly', 'Rourke750']
 depends: ['CivModCore']
 commands:
