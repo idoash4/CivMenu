@@ -48,10 +48,10 @@ public class TOSListener implements Listener {
 				public void run() {
 					locations.remove(p.getUniqueId());
 					if(!TOSManager.isTermPlayer(p, "CivMenu Agreement")){
-						p.kickPlayer(plugin.GetConfig().get("terms.kickMessage").getString());
 					}
 					
 				}
+				
 			}.runTaskLater(this.plugin, plugin.GetConfig().get("terms.kickDelay").getInt());
 		}
 	}
@@ -73,17 +73,15 @@ public class TOSListener implements Listener {
 		@CivConfig(name = "terms.link", def = "http://www.google.com", type = CivConfigType.String),
 		@CivConfig(name = "terms.message", def = "You can click this message to open up the terms of service.", type = CivConfigType.String),
 		@CivConfig(name = "terms.welcome" , def = "Welcome!", type = CivConfigType.String),
-		@CivConfig(name = "terms.confirm", def = "Once you've read it, you can click this message to agree to the terms", type = CivConfigType.String),
+		@CivConfig(name = "terms.confirm", def = "Once you've read it, you can click this message to agree to the terms", type = CivConfigType.String)
 	})
 	public void sendTOS(Player p) {
-
 		Menu menu = new Menu();
 
 		TextComponent welcome = new TextComponent(config.get("terms.welcome").getString());
 		welcome.setColor(ChatColor.RED);
 		welcome.setBold(true);
 		menu.setTitle(welcome);
-
 		TextComponent agree = new TextComponent(
 				config.get("terms.message").getString());
 

@@ -17,13 +17,12 @@
 	</properties>
 
 	<build>
-		<sourceDirectory>${basedir}/Civmenu/src</sourceDirectory>
+		<sourceDirectory>${basedir}/src</sourceDirectory>
 
 		<resources>
 			<resource>
-				<directory>${basedir}/Civmenu</directory>
+				<directory>${basedir}</directory>
 				<includes>
-					<include>**/*.java</include>
 					<include>*.yml</include>
 				</includes>
 				<filtering>true</filtering>
