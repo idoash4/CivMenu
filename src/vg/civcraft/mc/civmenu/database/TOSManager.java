@@ -1,15 +1,5 @@
 package vg.civcraft.mc.civmenu.database;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.util.Map;
-import java.util.TreeMap;
-import java.util.UUID;
 import java.util.logging.Level;
 
 import org.bukkit.Bukkit;
@@ -27,7 +17,6 @@ import vg.civcraft.mc.civmodcore.annotations.CivConfigs;
 
 public class TOSManager {
 	private CivMenu plugin;
-	private static File logFile;
 	private static Config config;
 	
 	private static ISaveLoad manager;

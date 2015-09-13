@@ -35,7 +35,6 @@ public class FlatFileManager implements ISaveLoad{
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-		parseLogFile();
 	}
 	
 	@Override
