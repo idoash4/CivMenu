@@ -51,7 +51,7 @@ public class MysqlManager implements ISaveLoad{
 		String username = config.get("mysql.username").getString();
 		String password = config.get("mysql.password").getString();
 		String host = config.get("mysql.host").getString();
-		String dbname = config.get("mysql.dbname").getName();
+		String dbname = config.get("mysql.dbname").getString();
 		int port = config.get("mysql.port").getInt();
 		db = new Database(host, port, dbname, username, password, plugin.getLogger());
 		if (!db.connect()) {
