@@ -19,6 +19,7 @@ public class CivMenu extends ACivMod {
 	
 	public void onEnable() {
 		super.onEnable();
+		new CivMenuAPI();
 		plugin = this;
 		tosManager = new TOSManager(this);
 		getServer().getPluginManager().registerEvents(new TOSListener(), this);

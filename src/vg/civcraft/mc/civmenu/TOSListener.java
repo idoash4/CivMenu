@@ -28,10 +28,11 @@ public class TOSListener implements Listener {
 	private CivMenu plugin = CivMenu.getInstance();
 	private Map<UUID, Location> locations;
 	private Config config = plugin.GetConfig();
-	private CivMenuAPI api = CivMenuAPI.getInstance();
+	private CivMenuAPI api;
 
 	public TOSListener() {
 		locations = new ConcurrentHashMap<UUID, Location>();
+		api = CivMenuAPI.getInstance();
 	}
 	
 	@CivConfigs({
