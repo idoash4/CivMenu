@@ -2,7 +2,7 @@ name: ${project.name}
 main: vg.civcraft.mc.civmenu.CivMenu
 version: ${project.version}
 author: ['BlackXnt', 'Maxopoly', 'Rourke750']
-depends: [CivModCore]
+depend: [CivModCore]
 commands:
   help:
     description: Help command.
