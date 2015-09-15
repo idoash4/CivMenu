@@ -8,6 +8,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import vg.civcraft.mc.civmenu.database.TOSManager;
+
 public class CommandHandler implements CommandExecutor{
 
 	private CivMenu pluginInstance = null;
@@ -63,8 +65,8 @@ public class CommandHandler implements CommandExecutor{
 		
 		Player player = (Player)sender;
 		
-		if (!TOSManager.registeredPlayers.containsKey(player.getUniqueId())){
-			if(TOSManager.addPlayer(player)){
+		if (!TOSManager.isTermPlayer(player, "CivMenu Agreement")){
+			if(TOSManager.addPlayer(player, "CivMenu Agreement")){
 				player.sendMessage("Thank you for signing the terms of service");
 				return true;
 			}

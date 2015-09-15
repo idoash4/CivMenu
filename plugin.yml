@@ -1,6 +1,6 @@
-name: CivMenu
+name: ${project.name}
 main: vg.civcraft.mc.civmenu.CivMenu
-version: 0.1
+version: ${project.version}
 author: ['BlackXnt', 'Maxopoly', 'Rourke750']
 depends: ['CivModCore']
 commands:
@@ -14,4 +14,7 @@ commands:
     aliases: [sign]
     permission: CivMenu.*
     usage: /sign
- 
+permissions:
+    CivMenu.*:
+      description: Gives access to /sign and /help
+      default: true

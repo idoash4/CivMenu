@@ -9,6 +9,7 @@ import org.bukkit.command.Command;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import vg.civcraft.mc.civmenu.database.TOSManager;
 import vg.civcraft.mc.civmodcore.ACivMod;
 
 public class CivMenu extends ACivMod {
@@ -18,6 +19,7 @@ public class CivMenu extends ACivMod {
 	
 	public void onEnable() {
 		super.onEnable();
+		new CivMenuAPI();
 		plugin = this;
 		tosManager = new TOSManager(this);
 		getServer().getPluginManager().registerEvents(new TOSListener(), this);
@@ -34,7 +36,7 @@ public class CivMenu extends ACivMod {
 	}
 	
     public void onDisable() { 
-    	
+    	tosManager.save();
     }
 
     public void SendHelpMenu(Player player, JavaPlugin plugin){

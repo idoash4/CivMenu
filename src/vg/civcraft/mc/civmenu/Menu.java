@@ -16,6 +16,10 @@ public class Menu {
 		parts = new ArrayList<TextComponent>();
 	}
 	
+	/**
+	 * Returns the title
+	 * @return Returns the TextComponent of the title.
+	 */
 	public TextComponent getTitle() {
 		return title;
 	}
