@@ -3,12 +3,16 @@ package vg.civcraft.mc.civmenu;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
+import org.bukkit.entity.Player;
+
 import net.md_5.bungee.api.chat.TextComponent;
 
 public class Menu {
 	TextComponent title;
 	TextComponent subTitle;
 	List<TextComponent> parts;
+	public final static int CHAT_SIZE = 52;
 	
 	public Menu(){
 		title = new TextComponent("");
@@ -50,22 +54,33 @@ public class Menu {
 		}
 	}
 	
-	public TextComponent create(){
-		TextComponent menu = new TextComponent(title);
-		menu.addExtra("\n");
+	public void sendPlayer(Player player){
+		TextComponent formattedtitle = (TextComponent) this.title.duplicate();
+		formattedtitle.setText(StringUtils.center(this.title.getText(), CHAT_SIZE, '-'));
+		player.spigot().sendMessage(formattedtitle);
 		
-		if(subTitle.getText()!= ""){
-			menu.addExtra(subTitle);
-			menu.addExtra("\n");
+		if(subTitle.getText() != ""){
+			player.spigot().sendMessage(subTitle);
 		}
 		
+		TextComponent message = new TextComponent("");
+		int counter = CHAT_SIZE;
 		for(int i = 0; i<parts.size(); i++){
-			menu.addExtra(parts.get(i));
-			if(i != parts.size() - 1){
-				menu.addExtra(", ");
+			message.addExtra("[");
+			message.addExtra(parts.get(i));
+			message.addExtra("] ");
+			counter -= (parts.get(i).getText().length() + 2);
+			if(i + 1 != parts.size()){
+				if(counter < parts.get(i+1).getText().length() + 2){
+					player.spigot().sendMessage(message);
+					message = new TextComponent("");
+					counter = CHAT_SIZE;
+				}
+			} else {
+				player.spigot().sendMessage(message);
 			}
 		}
 		
-		return menu;
+		player.spigot().sendMessage(formattedtitle);
 	}
 }
