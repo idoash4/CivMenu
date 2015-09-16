@@ -38,12 +38,14 @@ public class CommandHandler implements CommandExecutor{
 
 	private boolean commandHelp(CommandSender sender, String[] argv) {
 		
-		if (argv.length < 1) {
-			return false;
+		if(!(sender instanceof Player)){
+			sender.sendMessage("This command can only be executed by a player");
+			return true;
 		}
 		
-		if(!(sender instanceof Player)){
-			return false;
+		if (argv.length < 1) {
+			pluginInstance.SendHelpMenu(((Player)sender), null);
+			return true;
 		}
 		
 		for(Plugin plugin : Bukkit.getPluginManager().getPlugins()){
@@ -53,7 +55,7 @@ public class CommandHandler implements CommandExecutor{
 			}
 		}
 		
-		((Player)sender).sendMessage("Plugin wasn't found");
+		pluginInstance.SendHelpMenu(((Player)sender), null);
 		return true;
 	}
 

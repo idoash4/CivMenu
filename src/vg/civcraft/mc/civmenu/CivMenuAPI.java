@@ -15,6 +15,6 @@ public class CivMenuAPI {
 	}
 	
 	public void performAction(Player p, Menu menu) {
-		p.spigot().sendMessage(menu.create());
+		menu.sendPlayer(p);
 	}
 }

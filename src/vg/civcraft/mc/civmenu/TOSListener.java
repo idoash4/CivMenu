@@ -19,6 +19,8 @@ import vg.civcraft.mc.civmodcore.Config;
 import vg.civcraft.mc.civmodcore.annotations.CivConfig;
 import vg.civcraft.mc.civmodcore.annotations.CivConfigType;
 import vg.civcraft.mc.civmodcore.annotations.CivConfigs;
+import net.md_5.bungee.api.chat.ComponentBuilder;
+import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.ClickEvent;
@@ -36,7 +38,7 @@ public class TOSListener implements Listener {
 	}
 	
 	@CivConfigs({
-		@CivConfig(name = "terms.kickDelay", def = "6000", type = CivConfigType.Int),
+		@CivConfig(name = "terms.kickDelay", def = "1200", type = CivConfigType.Int),
 		@CivConfig(name = "terms.kickMessage", def = "You must accept the terms in order to play", type = CivConfigType.String)
 	})
 	@EventHandler
@@ -73,30 +75,33 @@ public class TOSListener implements Listener {
 	}
 
 	@CivConfigs({
+		@CivConfig(name = "terms.title" , def = "Welcome to Civcraft!", type = CivConfigType.String),
+		@CivConfig(name = "terms.message", def = "Civcraft is an experiment for communities, political ideologies, debate and discussion. Before you can start playing and join a civilization you must first read and agree to the terms of service", type = CivConfigType.String),
 		@CivConfig(name = "terms.link", def = "http://www.google.com", type = CivConfigType.String),
-		@CivConfig(name = "terms.message", def = "You can click this message to open up the terms of service.", type = CivConfigType.String),
-		@CivConfig(name = "terms.welcome" , def = "Welcome!", type = CivConfigType.String),
+		@CivConfig(name = "terms.linkMessage" , def = "You can click this message to open up the terms of service.", type = CivConfigType.String),
 		@CivConfig(name = "terms.confirm", def = "Once you've read it, you can click this message to agree to the terms", type = CivConfigType.String),
 	})
 	public void sendTOS(Player p) {
 
 		Menu menu = new Menu();
 
-		TextComponent welcome = new TextComponent(config.get("terms.welcome").getString());
-		welcome.setColor(ChatColor.RED);
-		welcome.setBold(true);
+		TextComponent welcome = new TextComponent(config.get("terms.title").getString());
+		welcome.setColor(ChatColor.YELLOW);
 		menu.setTitle(welcome);
 
-		TextComponent agree = new TextComponent(
-				config.get("terms.message").getString());
+		TextComponent message = new TextComponent(plugin.GetConfig().get("terms.message").getString());
+		message.setColor(ChatColor.AQUA);
+		menu.setSubTitle(message);
 
-		agree.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, config.get("terms.link").getString()));
-		menu.setSubTitle(agree);
+		TextComponent link = new TextComponent(plugin.GetConfig().get("terms.linkMessage").getString());
+		link.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, plugin.GetConfig().get("terms.link").getString()));
+		link.setItalic(true);
+		menu.addPart(link);
 		
-		TextComponent confirm = new TextComponent(config.get("terms.confirm").getString());
-		confirm.setClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND,
-				"/sign"));
-		
+		TextComponent confirm = new TextComponent(plugin.GetConfig().get("terms.confirm").getString());
+		confirm.setClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND,"/sign"));
+		confirm.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("/sign").create()));
+		confirm.setItalic(true);
 		menu.addPart(confirm);
 		
 		api.performAction(p, menu);
