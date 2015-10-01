@@ -12,6 +12,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import vg.civcraft.mc.civmenu.database.TOSManager;
@@ -58,6 +59,14 @@ public class TOSListener implements Listener {
 					
 				}
 			}.runTaskLater(this.plugin, plugin.GetConfig().get("terms.kickDelay").getInt());
+		}
+	}
+	
+	@EventHandler
+	public void playerRespawnEvent(PlayerRespawnEvent e) {
+		Player p = e.getPlayer();
+		if (!TOSManager.isTermPlayer(p, "CivMenu Agreement")) {
+			locations.put(p.getUniqueId(), e.getRespawnLocation());
 		}
 	}
 	
