@@ -52,7 +52,7 @@ public class CivMenu extends ACivMod {
 		Menu menu = new Menu();
 
 		if (plugin == null) {
-			TextComponent title = new TextComponent("Civcraft Help Meu");
+			TextComponent title = new TextComponent("Civcraft Help Menu");
 			title.setColor(ChatColor.RED);
 			menu.setTitle(title);
 			menu.setSubTitle(new TextComponent(this.GetConfig().get("helpMenu.message").getString()));
