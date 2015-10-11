@@ -9,13 +9,16 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import vg.civcraft.mc.civmenu.database.TOSManager;
+import vg.civcraft.mc.mercury.MercuryAPI;
 
 public class CommandHandler implements CommandExecutor{
 
 	private CivMenu pluginInstance = null;
+	private boolean isMercuryEnabled = false;
 	
 	public CommandHandler(CivMenu pluginInstance) {
 		this.pluginInstance = pluginInstance;
+		this.isMercuryEnabled = pluginInstance.getServer().getPluginManager().isPluginEnabled("Mercury");
 	}	
 	
 	@Override
@@ -70,6 +73,11 @@ public class CommandHandler implements CommandExecutor{
 		if (!TOSManager.isTermPlayer(player, "CivMenu Agreement")){
 			if(TOSManager.addPlayer(player, "CivMenu Agreement")){
 				player.sendMessage("Thank you for signing the terms of service");
+				if (isMercuryEnabled){
+					MercuryAPI.instance.sendMessage("all",
+							"sign~"+player.getUniqueId().toString(), 
+							"civmenu");
+				}
 				return true;
 			}
 		} else {

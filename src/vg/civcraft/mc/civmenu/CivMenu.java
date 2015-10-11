@@ -15,6 +15,7 @@ import vg.civcraft.mc.civmodcore.ACivMod;
 import vg.civcraft.mc.civmodcore.annotations.CivConfig;
 import vg.civcraft.mc.civmodcore.annotations.CivConfigType;
 import vg.civcraft.mc.civmodcore.annotations.CivConfigs;
+import vg.civcraft.mc.mercury.MercuryAPI;
 
 public class CivMenu extends ACivMod {
 	
@@ -27,7 +28,10 @@ public class CivMenu extends ACivMod {
 		plugin = this;
 		tosManager = new TOSManager(this);
 		getServer().getPluginManager().registerEvents(new TOSListener(), this);
-		
+		if (getServer().getPluginManager().isPluginEnabled("Mercury")){
+			getServer().getPluginManager().registerEvents(new MercuryListener(), plugin);
+			MercuryAPI.instance.registerPluginMessageChannel("civmenu");
+		}
 		CommandHandler commandHandler = new CommandHandler(this);
 		for (String command : getDescription().getCommands().keySet()) {
 			getCommand(command).setExecutor(commandHandler);

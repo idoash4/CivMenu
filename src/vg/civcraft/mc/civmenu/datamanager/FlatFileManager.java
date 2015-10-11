@@ -115,9 +115,14 @@ public class FlatFileManager implements ISaveLoad{
 
 	@Override
 	public void addPlayer(Player p, String term) {
-		if (!registeredPlayers.containsKey(p.getUniqueId()))
-			registeredPlayers.put(p.getUniqueId(), new TermObject(p.getUniqueId()));
-		registeredPlayers.get(p.getUniqueId()).addTerm(term);
+		this.setUUID(p.getUniqueId(), term);
+	}
+	
+	@Override
+	public void setUUID(UUID uuid, String term){
+		if (!registeredPlayers.containsKey(uuid))
+			registeredPlayers.put(uuid, new TermObject(uuid));
+		registeredPlayers.get(uuid).addTerm(term);
 	}
 
 	@Override
