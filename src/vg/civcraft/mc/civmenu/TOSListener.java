@@ -7,11 +7,10 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import vg.civcraft.mc.civmenu.database.TOSManager;
@@ -53,7 +52,7 @@ public class TOSListener implements Listener {
 				public void run() {
 					locations.remove(p.getUniqueId());
 					if(!TOSManager.isTermPlayer(p, "CivMenu Agreement")){
-						p.kickPlayer(plugin.GetConfig().get("terms.kickMessage").getString());
+						p.kickPlayer(ChatColor.DARK_RED+plugin.GetConfig().get("terms.kickMessage").getString());
 					}
 					
 				}
@@ -66,13 +65,27 @@ public class TOSListener implements Listener {
 	public void playerMoveEvent(PlayerMoveEvent event) {
 		Player p = event.getPlayer();
 		if (!TOSManager.isTermPlayer(p, "CivMenu Agreement")) {
-			if(event.getTo().distance(locations.get(p.getUniqueId())) > plugin.GetConfig().get("terms.MovementRange").getInt()){
+			Location from = locations.get(p.getUniqueId());
+			if (from == null){
+				from = event.getFrom();
+				locations.put(p.getUniqueId(), from);
+			}
+			if(event.getTo().distance(from) > plugin.GetConfig().get("terms.MovementRange").getInt()){
 				p.sendMessage(ChatColor.RED + "You must accept the terms in order to play.");
 				sendTOS(p);
-				event.setTo(locations.get(p.getUniqueId()));
+				event.setTo(from);
 			}
 		}
 	}
+	
+	@EventHandler
+	public void playerRespawnEvent(PlayerRespawnEvent e) {
+		Player p = e.getPlayer();
+		if (!TOSManager.isTermPlayer(p, "CivMenu Agreement")) {
+			locations.remove(p.getUniqueId());
+		}
+	}
+	
 
 	@CivConfigs({
 		@CivConfig(name = "terms.title" , def = "Welcome to Civcraft!", type = CivConfigType.String),
