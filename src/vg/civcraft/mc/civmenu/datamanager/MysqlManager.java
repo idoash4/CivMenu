@@ -107,6 +107,13 @@ public class MysqlManager implements ISaveLoad{
 			e.printStackTrace();
 		}
 	}
+	
+	@Override
+	public void setUUID(UUID uuid, String term){
+		if (!registeredPlayers.containsKey(uuid))
+			registeredPlayers.put(uuid, new TermObject(uuid));
+		registeredPlayers.get(uuid).addTerm(term);
+	}
 
 	@Override
 	public boolean isAddedPlayer(Player p, String term) {
