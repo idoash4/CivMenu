@@ -1,21 +1,53 @@
 package vg.civcraft.mc.civmenu.guides;
 
-import org.bukkit.entity.Player;
-import org.bukkit.scheduler.BukkitRunnable;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
-public class UnloadDismissalsTask extends BukkitRunnable {
+import vg.civcraft.mc.civmenu.CivMenu;
+import vg.civcraft.mc.civmodcore.annotations.CivConfig;
+import vg.civcraft.mc.civmodcore.annotations.CivConfigType;
+import vg.civcraft.mc.civmodcore.annotations.CivConfigs;
 
-	private Player player;
+public class UnloadDismissalsTask implements Runnable {
+
 	private ResponseManager manager;
+	private ConcurrentHashMap<UUID, Long> mru;
+	private long delay = -1;
 	
-	public UnloadDismissalsTask(Player player, ResponseManager manager) {
-		this.player = player;
+	public UnloadDismissalsTask(ResponseManager manager) {
 		this.manager = manager;
+		mru = new ConcurrentHashMap<UUID, Long>();
+		delay = getUnloadDelay();
 	}
 	
 	@Override
 	public void run() {
-		manager.unloadDismissals(player);
+		unloadCache();
 	}
-
+	
+	@CivConfigs({
+		@CivConfig(name = "unload_delay", def = "18000", type = CivConfigType.Int)
+	})
+	public long getUnloadDelay() {
+		if(delay < 0) {
+			delay = CivMenu.getInstance().GetConfig().get("unload_delay").getInt();
+		}
+		return delay;
+	}
+	
+	public void unloadCache() {
+		for(UUID id : mru.keySet()) {
+			if(mru.get(id) < System.currentTimeMillis() - CivMenu.getInstance().GetConfig().get("unload_delay").getInt()) {
+				manager.unloadDismissals(id);
+			}
+		}
+	}
+	
+	public void updateMRU(UUID id) {
+		mru.put(id, System.currentTimeMillis());
+	}
+	
+	public void removePlayer(UUID id) {
+		mru.remove(id);
+	}
 }

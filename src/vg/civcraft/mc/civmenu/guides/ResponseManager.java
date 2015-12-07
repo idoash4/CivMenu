@@ -3,8 +3,10 @@ package vg.civcraft.mc.civmenu.guides;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Logger;
 
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
@@ -18,9 +20,6 @@ import net.md_5.bungee.api.chat.TextComponent;
 import vg.civcraft.mc.civmenu.CivMenu;
 import vg.civcraft.mc.civmenu.Menu;
 import vg.civcraft.mc.civmenu.datamanager.DismissalDAO;
-import vg.civcraft.mc.civmodcore.annotations.CivConfig;
-import vg.civcraft.mc.civmodcore.annotations.CivConfigType;
-import vg.civcraft.mc.civmodcore.annotations.CivConfigs;
 
 public class ResponseManager {
 
@@ -29,17 +28,20 @@ public class ResponseManager {
 	private final String plugin;
 	private DismissalDAO dao;
 	private HashMap<String, String> responses;
-	private HashMap<UUID, List<String>> dismissals;
+	private ConcurrentHashMap<UUID, List<String>> dismissals;
 	private String documentationUrl;
 	private Logger logger;
+	private UnloadDismissalsTask unloadTask;
 	
 	private ResponseManager(Plugin plugin) {
 		this.plugin = plugin.getName();
 		logger = CivMenu.getInstance().getLogger();
 		dao = DismissalDAO.getInstance(plugin.getName());
 		responses = new HashMap<String, String>();
-		dismissals = new HashMap<UUID, List<String>>();
+		dismissals = new ConcurrentHashMap<UUID, List<String>>();
 		loadEventResponses(plugin.getConfig());
+		unloadTask = new UnloadDismissalsTask(this);
+		Bukkit.getScheduler().scheduleSyncRepeatingTask(CivMenu.getInstance(), unloadTask, 0L, unloadTask.getUnloadDelay());
 	}
 	
 	private void loadEventResponses(FileConfiguration config) {
@@ -71,21 +73,19 @@ public class ResponseManager {
 		}
 	}
 	
-	@CivConfigs({
-		@CivConfig(name = "unload_delay", def = "18000", type = CivConfigType.Int)
-	})
-	public void loadDismissals(Player player) {
-		dismissals.put(player.getUniqueId(), dao.getDismissals(player.getUniqueId()));
-		new UnloadDismissalsTask(player, this).runTaskLater(CivMenu.getInstance(), CivMenu.getInstance().GetConfig().get("unload_delay").getInt());
+	public void loadDismissals(UUID id) {
+		dismissals.put(id, dao.getDismissals(id));
+		unloadTask.updateMRU(id);
 	}
 	
-	public void unloadDismissals(Player player) {
-		dismissals.remove(player.getUniqueId());
+	public void unloadDismissals(UUID id) {
+		dismissals.remove(id);
+		unloadTask.removePlayer(id);
 	}
 	
 	public void sendMessageForEvent(String event, Player player) {
 		if(!dismissals.containsKey(player.getUniqueId())) {
-			loadDismissals(player);
+			loadDismissals(player.getUniqueId());
 		}
 		if(dismissals.get(player.getUniqueId()).contains(event)) {
 			logger.info(player.getName() + " has dismissed " + plugin + " " + event);
@@ -150,13 +150,13 @@ public class ResponseManager {
 	
 	public static void handlePlayerLogin(Player player) {
 		for(ResponseManager manager : managers.values()) {
-			manager.loadDismissals(player);
+			manager.loadDismissals(player.getUniqueId());
 		}
 	}
 	
 	public static void handlePlayerLogout(Player player) {
 		for(ResponseManager manager : managers.values()) {
-			manager.unloadDismissals(player);
+			manager.unloadDismissals(player.getUniqueId());
 		}
 	}
 }
