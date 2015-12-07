@@ -74,7 +74,9 @@ public class ResponseManager {
 	}
 	
 	public void loadDismissals(UUID id) {
-		dismissals.put(id, dao.getDismissals(id));
+    List<String> events = dao.getDismissals(id);
+    events.retainAll(responses.keySet());
+		dismissals.put(id, events);
 		unloadTask.updateMRU(id);
 	}
 	
