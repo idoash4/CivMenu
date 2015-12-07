@@ -117,7 +117,7 @@ public class CommandHandler implements CommandExecutor{
 		}
 		
 		ResponseManager rm;
-		if((rm = ResponseManager.getGuideManager(plugin)) != null) {
+		if((rm = ResponseManager.getResponseManager(plugin)) != null) {
 			rm.dismissEvent(args[1], (Player) sender);
 			return true;
 		} else {

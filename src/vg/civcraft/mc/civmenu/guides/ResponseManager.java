@@ -141,7 +141,7 @@ public class ResponseManager {
 		dismissals.get(player.getUniqueId()).add(event);
 	}
 	
-	public static ResponseManager getGuideManager(Plugin plugin) {
+	public static ResponseManager getResponseManager(Plugin plugin) {
 		if(managers.get(plugin.getName()) == null) {
 			managers.put(plugin.getName(), new ResponseManager(plugin));
 		}
