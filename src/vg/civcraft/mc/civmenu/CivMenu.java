@@ -11,6 +11,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import vg.civcraft.mc.civmenu.database.TOSManager;
+import vg.civcraft.mc.civmenu.guides.DismissalCacheListener;
 import vg.civcraft.mc.civmodcore.ACivMod;
 import vg.civcraft.mc.civmodcore.annotations.CivConfig;
 import vg.civcraft.mc.civmodcore.annotations.CivConfigType;
@@ -28,6 +29,7 @@ public class CivMenu extends ACivMod {
 		plugin = this;
 		tosManager = new TOSManager(this);
 		getServer().getPluginManager().registerEvents(new TOSListener(), this);
+		getServer().getPluginManager().registerEvents(new DismissalCacheListener(), this);
 		if (getServer().getPluginManager().isPluginEnabled("Mercury")){
 			getServer().getPluginManager().registerEvents(new MercuryListener(), plugin);
 			MercuryAPI.instance.registerPluginMessageChannel("civmenu");

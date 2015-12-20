@@ -1,7 +1,7 @@
 name: ${project.name}
 main: vg.civcraft.mc.civmenu.CivMenu
 version: ${project.version}
-author: ['BlackXnt', 'Maxopoly', 'Rourke750', 'suiradx']
+author: ['BlackXnt', 'Maxopoly', 'Rourke750', 'suiradx', 'TealNerd']
 depend: [CivModCore]
 softdepend: [Mercury]
 commands:
@@ -15,7 +15,20 @@ commands:
     aliases: [sign]
     permission: CivMenu.*
     usage: /sign
+  guide:
+    description: Command to get a guide book
+    aliases: [guide]
+    permission: CivMenu.*
+    usage: /guide <guideName>
+  dismiss:
+    description: Command to dismiss event responses
+    aliases: [dismiss]
+    permission: CivMenu.*
+    usage: /dismiss <plugin> <event>
 permissions:
     CivMenu.*:
-      description: Gives access to /sign and /help
+      description: Gives access to commands
       default: true
+    CivMenu.bypass:
+      description: Allows players to bypass event response messages
+      default: op

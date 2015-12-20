@@ -10,6 +10,8 @@ import java.util.logging.Logger;
 import com.avaje.ebeaninternal.server.lib.sql.DataSourceException;
 
 public class Database {
+	private static boolean driverInitialized = false;
+	
 	private String host;
 	private int port;
 	private String db;
@@ -52,10 +54,13 @@ public class Database {
 	public boolean connect() {
 		String jdbc = "jdbc:mysql://" + host + ":" + port + "/" + db + "?user="
 				+ user + "&password=" + password;
-		try {
-			Class.forName("com.mysql.jdbc.Driver").newInstance();
-		} catch (Exception ex) {
-			throw new DataSourceException("Failed to initialize JDBC driver.");
+		if(!driverInitialized) {
+			try {
+				Class.forName("com.mysql.jdbc.Driver").newInstance();
+				driverInitialized = true;
+			} catch (Exception ex) {
+				throw new DataSourceException("Failed to initialize JDBC driver.");
+			}
 		}
 		try {
 			connection = DriverManager.getConnection(jdbc);
@@ -105,6 +110,9 @@ public class Database {
 	 */
 	public PreparedStatement prepareStatement(String sqlStatement) {
 		try {
+			if(!isConnected()) {
+				connect();
+			}
 			return connection.prepareStatement(sqlStatement);
 		} catch (SQLException ex) {
 			this.logger.log(Level.SEVERE, "Failed to prepare statement! "
