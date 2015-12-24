@@ -14,7 +14,7 @@ public class MercuryListener implements Listener {
 	public void onMercuryMessage(AsyncPluginBroadcastMessageEvent event){
 		if (!event.getChannel().equalsIgnoreCase("civmenu"))
 			return;
-		String[] splitmsg = event.getMessage().split("~");
+		String[] splitmsg = event.getMessage().split("\\|");
 		if (splitmsg[0].equals("sign")){
 			UUID uuid = UUID.fromString(splitmsg[1]);
 			TOSManager.setUUID(uuid, "CivMenu Agreement");

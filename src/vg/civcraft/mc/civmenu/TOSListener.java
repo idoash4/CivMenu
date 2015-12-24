@@ -38,7 +38,7 @@ public class TOSListener implements Listener {
 	
 	@CivConfigs({
 		@CivConfig(name = "terms.kickDelay", def = "1200", type = CivConfigType.Int),
-		@CivConfig(name = "terms.kickMessage", def = "You must accept the terms in order to play", type = CivConfigType.String)
+		@CivConfig(name = "terms.kickMessage", def = "You must accept the terms using /sign in order to play.", type = CivConfigType.String)
 	})
 	@EventHandler
 	public void playerJoinEvent(PlayerJoinEvent event) {
@@ -88,17 +88,21 @@ public class TOSListener implements Listener {
 	
 
 	@CivConfigs({
-		@CivConfig(name = "terms.title" , def = "Welcome to Civcraft!", type = CivConfigType.String),
+		@CivConfig(name = "terms.title.title" , def = "Welcome to Civcraft!", type = CivConfigType.String),
+		@CivConfig(name = "terms.subtitle" , def = "You need to agree to the TOS in chat", type = CivConfigType.String),
 		@CivConfig(name = "terms.message", def = "Civcraft is an experiment for communities, political ideologies, debate and discussion. Before you can start playing and join a civilization you must first read and agree to the terms of service", type = CivConfigType.String),
 		@CivConfig(name = "terms.link", def = "http://www.google.com", type = CivConfigType.String),
 		@CivConfig(name = "terms.linkMessage" , def = "You can click this message to open up the terms of service.", type = CivConfigType.String),
 		@CivConfig(name = "terms.confirm", def = "Once you've read it, you can click this message to agree to the terms", type = CivConfigType.String),
+		@CivConfig(name = "terms.title.fadeIn" , def = "20", type = CivConfigType.Int),
+		@CivConfig(name = "terms.title.stay" , def = "200", type = CivConfigType.Int),
+		@CivConfig(name = "terms.title.fadeOut" , def = "20", type = CivConfigType.Int)
 	})
 	public void sendTOS(Player p) {
 
 		Menu menu = new Menu();
 
-		TextComponent welcome = new TextComponent(config.get("terms.title").getString());
+		TextComponent welcome = new TextComponent(config.get("terms.title.title").getString());
 		welcome.setColor(ChatColor.YELLOW);
 		menu.setTitle(welcome);
 
@@ -118,5 +122,10 @@ public class TOSListener implements Listener {
 		menu.addPart(confirm);
 		
 		api.performAction(p, menu);
+		
+		Title title = new Title(config.get("terms.title.title").getString(), config.get("terms.subtitle").getString(),
+				config.get("terms.title.fadeIn").getInt(), config.get("terms.title.stay").getInt(),
+				config.get("terms.title.fadeOut").getInt());
+		title.sendTitle(p);
 	}
 }
