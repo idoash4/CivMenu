@@ -85,9 +85,7 @@ public class CommandHandler implements CommandExecutor{
 			if(TOSManager.addPlayer(player, "CivMenu Agreement")){
 				player.sendMessage("Thank you for signing the terms of service");
 				if (isMercuryEnabled){
-					MercuryAPI.instance.sendMessage("all",
-							"sign~"+player.getUniqueId().toString(), 
-							"civmenu");
+					MercuryAPI.sendGlobalMessage("sign|" + player.getUniqueId(), "civmenu");
 				}
 				return true;
 			}

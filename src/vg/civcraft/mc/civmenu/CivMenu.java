@@ -32,7 +32,7 @@ public class CivMenu extends ACivMod {
 		getServer().getPluginManager().registerEvents(new DismissalCacheListener(), this);
 		if (getServer().getPluginManager().isPluginEnabled("Mercury")){
 			getServer().getPluginManager().registerEvents(new MercuryListener(), plugin);
-			MercuryAPI.instance.registerPluginMessageChannel("civmenu");
+			MercuryAPI.registerPluginMessageChannel("civmenu");
 		}
 		CommandHandler commandHandler = new CommandHandler(this);
 		for (String command : getDescription().getCommands().keySet()) {
