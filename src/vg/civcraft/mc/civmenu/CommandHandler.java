@@ -90,7 +90,7 @@ public class CommandHandler implements CommandExecutor{
 				return true;
 			}
 		} else {
-			player.sendMessage("You have already signed the terms of service");
+			player.sendMessage("You have already signed the terms of service.");
 			return true;
 		}
 		
@@ -99,18 +99,24 @@ public class CommandHandler implements CommandExecutor{
 
 	private boolean commandDismiss(CommandSender sender, String[] args) {
 		if(!(sender instanceof Player)) {
-			sender.sendMessage(ChatColor.RED + "Sorry, only players can dismiss events");
+			sender.sendMessage(ChatColor.RED + "Sorry, only players can dismiss events.");
+			return true;
+		}
+		
+		if(args.length == 1 && args[0].equals("*")) {
+			ResponseManager.dismissAll((Player) sender);
+			sender.sendMessage(ChatColor.GREEN + "You have dismissed all future events from CivMenu.");
 			return true;
 		}
 		
 		if(args.length < 2) {
-			sender.sendMessage(ChatColor.RED + "Invalid arguments, do /dismiss <plugin> <event>");
+			sender.sendMessage(ChatColor.RED + "Invalid arguments, do /dismiss <plugin> <event>.");
 			return true;
 		}
 		
 		Plugin plugin = Bukkit.getPluginManager().getPlugin(args[0]);
 		if(plugin == null) {
-			sender.sendMessage(ChatColor.RED + "That plugin isn't installed and thus cannot have it's events dismissed");
+			sender.sendMessage(ChatColor.RED + "That plugin isn't installed and thus cannot have it's events dismissed.");
 			return true;
 		}
 		
@@ -119,7 +125,7 @@ public class CommandHandler implements CommandExecutor{
 			rm.dismissEvent(args[1], (Player) sender);
 			return true;
 		} else {
-			sender.sendMessage(ChatColor.RED + args[0] + " does not have any events configured");
+			sender.sendMessage(ChatColor.RED + args[0] + " does not have any events configured.");
 			return true;
 		}
 	}
@@ -131,7 +137,7 @@ public class CommandHandler implements CommandExecutor{
 		}
 		
 		if(args.length < 1) {
-			sender.sendMessage(ChatColor.RED + "Invalid arguments, do /guide <bookname>");
+			sender.sendMessage(ChatColor.RED + "Invalid arguments, do /guide <bookname>.");
 			return true;
 		}
 		

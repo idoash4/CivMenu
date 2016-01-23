@@ -26,12 +26,16 @@ public class ExamplePlugin extends JavaPlugin implements Listener {
   }
 }
 ```
+When configuring events, you can specify text to show the player (the basic description such as "you can use pearls to imprison people"), an event specific documentation url which will override the documentation url if it was set for the plugin, and a book to prompt the users with. If you include a book with the plugin's name in your config it will load that book by default
+
 Config for ExamplePlugin:
 ``` yml
 CivMenu:
   events:
     SomeBukkitEvent:
       text: Text to send to the user on the SomeBukkitEvent
+      url: http://documentationurl.com/SomeBukkitEvent
+      book: ham
   url: http://documentationurl.com
   books:
     ham:

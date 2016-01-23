@@ -1,17 +1,17 @@
 package vg.civcraft.mc.civmenu;
 
+import org.bukkit.command.Command;
+import org.bukkit.entity.Player;
+import org.bukkit.plugin.java.JavaPlugin;
+
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
-
-import org.bukkit.command.Command;
-import org.bukkit.entity.Player;
-import org.bukkit.plugin.java.JavaPlugin;
-
 import vg.civcraft.mc.civmenu.database.TOSManager;
 import vg.civcraft.mc.civmenu.guides.DismissalCacheListener;
+import vg.civcraft.mc.civmenu.guides.ResponseManager;
 import vg.civcraft.mc.civmodcore.ACivMod;
 import vg.civcraft.mc.civmodcore.annotations.CivConfig;
 import vg.civcraft.mc.civmodcore.annotations.CivConfigType;
@@ -25,9 +25,9 @@ public class CivMenu extends ACivMod {
 	
 	public void onEnable() {
 		super.onEnable();
-		new CivMenuAPI();
 		plugin = this;
 		tosManager = new TOSManager(this);
+		ResponseManager.initWildcardDismissals();
 		getServer().getPluginManager().registerEvents(new TOSListener(), this);
 		getServer().getPluginManager().registerEvents(new DismissalCacheListener(), this);
 		if (getServer().getPluginManager().isPluginEnabled("Mercury")){
