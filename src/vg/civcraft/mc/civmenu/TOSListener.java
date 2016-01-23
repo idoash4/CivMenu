@@ -86,7 +86,6 @@ public class TOSListener implements Listener {
 		}
 	}
 	
-
 	@CivConfigs({
 		@CivConfig(name = "terms.title.title" , def = "Welcome to Civcraft!", type = CivConfigType.String),
 		@CivConfig(name = "terms.subtitle" , def = "You need to agree to the TOS in chat", type = CivConfigType.String),

@@ -1,5 +1,6 @@
 package vg.civcraft.mc.civmenu.guides;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
@@ -25,9 +26,12 @@ public class ResponseManager {
 
 	private static HashMap<String, ResponseManager> managers = new HashMap<String, ResponseManager>();
 	
+	private static DismissalDAO wildcardDAO;
+	private static ArrayList<UUID> wildcardDismissals;
+	
 	private final String plugin;
 	private DismissalDAO dao;
-	private HashMap<String, String> responses;
+	private HashMap<String, EventResponse> responses;
 	private ConcurrentHashMap<UUID, List<String>> dismissals;
 	private String documentationUrl;
 	private Logger logger;
@@ -37,7 +41,7 @@ public class ResponseManager {
 		this.plugin = plugin.getName();
 		logger = CivMenu.getInstance().getLogger();
 		dao = DismissalDAO.getInstance(plugin.getName());
-		responses = new HashMap<String, String>();
+		responses = new HashMap<String, EventResponse>();
 		dismissals = new ConcurrentHashMap<UUID, List<String>>();
 		loadEventResponses(plugin.getConfig());
 		unloadTask = new UnloadDismissalsTask(this);
@@ -55,7 +59,16 @@ public class ResponseManager {
 				if(!responses.contains(event + ".text")) {
 					continue;
 				}
-				this.responses.put(event, responses.getString(event + ".text"));
+				String url = null;
+				String book = null;
+				if(responses.contains(event + ".url")) url = responses.getString(event + ".url");
+				if(responses.contains(event + ".book")) book = responses.getString(event + ".book");
+				String text = responses.getString(event + ".text");
+				if(url == null && book == null) {
+					this.responses.put(event, new EventResponse(text));
+				} else {
+					this.responses.put(event, new EventResponse(text, url, book));
+				}
 			}
 		}
 		if(config.contains("CivMenu.url")) {
@@ -86,6 +99,9 @@ public class ResponseManager {
 	}
 	
 	public void sendMessageForEvent(String event, Player player) {
+		if(wildcardDismissals.contains(player.getUniqueId())) {
+			return;
+		}
 		if(!dismissals.containsKey(player.getUniqueId())) {
 			loadDismissals(player.getUniqueId());
 		}
@@ -109,30 +125,34 @@ public class ResponseManager {
 		title.setColor(ChatColor.YELLOW);
 		menu.setTitle(title);
 		
-		TextComponent message = new TextComponent(responses.get(event));
+		EventResponse response = responses.get(event);
+		
+		TextComponent message = new TextComponent(response.getText());
 		message.setColor(ChatColor.AQUA);
 		menu.setSubTitle(message);
 		
-		TextComponent link = new TextComponent("Click to permanently dismiss");
-		link.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("/dismiss " + plugin + " " + event).create()));
-		link.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/dismiss " + plugin + " " + event));
-		link.setItalic(true);
-		menu.addPart(link);
+		TextComponent command = new TextComponent("Click to permanently dismiss");
+		command.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("/dismiss " + plugin + " " + event).create()));
+		command.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/dismiss " + plugin + " " + event));
+		command.setItalic(true);
+		menu.addPart(command);
 		
-		if(GuideBook.getBook(plugin) != null) {
-			TextComponent book = new TextComponent("Click for plugin guide");
-			book.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("/guide " + plugin).create()));
-			book.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/guide " + plugin));
+		if(GuideBook.getBook(plugin) != null || (response.getBook() != null && GuideBook.getBook(response.getBook()) != null)) {
+			TextComponent book = new TextComponent("Click for book");
+			String bookName = response.getBook() != null ? response.getBook() : plugin;
+			book.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("/guide " + bookName).create()));
+			book.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/guide " + bookName));
 			book.setItalic(true);
 			menu.addPart(book);
 		}
 		
-		if(documentationUrl != null) {
-			TextComponent docu = new TextComponent("Click to view documentation");
-			docu.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(documentationUrl).create()));
-			docu.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, documentationUrl));
-			docu.setItalic(true);
-			menu.addPart(docu);
+		if(response.getUrl() != null || documentationUrl != null) {
+			TextComponent url = new TextComponent("Click to view documentation");
+			String urlString = response.getUrl() != null ? response.getUrl() : documentationUrl;
+			url.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(urlString).create()));
+			url.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, urlString));
+			url.setItalic(true);
+			menu.addPart(url);
 		}
 		
 		menu.sendPlayer(player);
@@ -151,14 +171,37 @@ public class ResponseManager {
 	}
 	
 	public static void handlePlayerLogin(Player player) {
+		synchronized(wildcardDismissals) {
+			if(wildcardDAO.getDismissals(player.getUniqueId()) != null) {
+				wildcardDismissals.add(player.getUniqueId());
+				return;
+			}
+		}
 		for(ResponseManager manager : managers.values()) {
 			manager.loadDismissals(player.getUniqueId());
 		}
 	}
 	
 	public static void handlePlayerLogout(Player player) {
+		synchronized(wildcardDismissals) {
+			if(wildcardDismissals.contains(player.getUniqueId())) {
+				wildcardDismissals.remove(player.getUniqueId());
+				return;
+			}
+		}
 		for(ResponseManager manager : managers.values()) {
 			manager.unloadDismissals(player.getUniqueId());
 		}
+	}
+	
+	public static void dismissAll(Player player) {
+		synchronized(wildcardDismissals) {
+			wildcardDismissals.add(player.getUniqueId());
+		}
+		wildcardDAO.dismissEvent("*", player.getUniqueId());
+	}
+	
+	public static void initWildcardDismissals() {
+		wildcardDAO = DismissalDAO.getInstance("*");
 	}
 }

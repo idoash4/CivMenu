@@ -103,6 +103,10 @@ public class CommandHandler implements CommandExecutor{
 			return true;
 		}
 		
+		if(args.length == 1 && args[0].equals("*")) {
+			ResponseManager.dismissAll((Player) sender);
+		}
+		
 		if(args.length < 2) {
 			sender.sendMessage(ChatColor.RED + "Invalid arguments, do /dismiss <plugin> <event>");
 			return true;
