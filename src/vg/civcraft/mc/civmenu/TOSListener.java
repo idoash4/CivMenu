@@ -29,11 +29,9 @@ public class TOSListener implements Listener {
 	private CivMenu plugin = CivMenu.getInstance();
 	private Map<UUID, Location> locations;
 	private Config config = plugin.GetConfig();
-	private CivMenuAPI api;
-
+	
 	public TOSListener() {
 		locations = new ConcurrentHashMap<UUID, Location>();
-		api = CivMenuAPI.getInstance();
 	}
 	
 	@CivConfigs({
@@ -120,7 +118,7 @@ public class TOSListener implements Listener {
 		confirm.setItalic(true);
 		menu.addPart(confirm);
 		
-		api.performAction(p, menu);
+		menu.sendPlayer(p);
 		
 		Title title = new Title(config.get("terms.title.title").getString(), config.get("terms.subtitle").getString(),
 				config.get("terms.title.fadeIn").getInt(), config.get("terms.title.stay").getInt(),
