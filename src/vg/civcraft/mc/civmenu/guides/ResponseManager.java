@@ -100,6 +100,7 @@ public class ResponseManager {
 	
 	public void sendMessageForEvent(String event, Player player) {
 		if(wildcardDismissals.contains(player.getUniqueId())) {
+			logger.info(player.getName() + " dismissed all events");
 			return;
 		}
 		if(!dismissals.containsKey(player.getUniqueId())) {
@@ -172,7 +173,8 @@ public class ResponseManager {
 	
 	public static void handlePlayerLogin(Player player) {
 		synchronized(wildcardDismissals) {
-			if(wildcardDAO.getDismissals(player.getUniqueId()) != null) {
+			List<String> dismissals = wildcardDAO.getDismissals(player.getUniqueId());
+			if(dismissals != null && !dismissals.isEmpty()) {
 				wildcardDismissals.add(player.getUniqueId());
 				return;
 			}
@@ -198,10 +200,11 @@ public class ResponseManager {
 		synchronized(wildcardDismissals) {
 			wildcardDismissals.add(player.getUniqueId());
 		}
-		wildcardDAO.dismissEvent("*", player.getUniqueId());
+		wildcardDAO.dismissEvent("all", player.getUniqueId());
 	}
 	
 	public static void initWildcardDismissals() {
-		wildcardDAO = DismissalDAO.getInstance("*");
+		wildcardDAO = DismissalDAO.getInstance("all");
+		wildcardDismissals = new ArrayList<UUID>();
 	}
 }
