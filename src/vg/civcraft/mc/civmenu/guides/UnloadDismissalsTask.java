@@ -36,7 +36,8 @@ public class UnloadDismissalsTask implements Runnable {
 	}
 	
 	public void unloadCache() {
-		for(UUID id : mru.keySet()) {
+		KeySetView<UUID, Long> keys = (KeySetView<UUID, Long>)mru.keySet();
+		for(UUID id : keys) {
 			if(mru.get(id) < System.currentTimeMillis() - CivMenu.getInstance().GetConfig().get("unload_delay").getInt()) {
 				manager.unloadDismissals(id);
 			}
