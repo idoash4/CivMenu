@@ -1,5 +1,6 @@
 package vg.civcraft.mc.civmenu.guides;
 
+import java.util.Enumeration;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
