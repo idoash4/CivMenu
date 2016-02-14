@@ -1,6 +1,6 @@
 package vg.civcraft.mc.civmenu.guides;
 
-import java.util.Enumeration;
+import java.util.Map.Entry;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -37,9 +37,8 @@ public class UnloadDismissalsTask implements Runnable {
 	}
 	
 	public void unloadCache() {
-		Enumeration<UUID> keys = mru.keys();
-		UUID id = null;
-		while((id = keys.nextElement()) != null) {
+		for (Entry <UUID, Long> entry : mru.entrySet()) {
+			UUID id = entry.getKey();
 			if(mru.get(id) < System.currentTimeMillis() - CivMenu.getInstance().GetConfig().get("unload_delay").getInt()) {
 				manager.unloadDismissals(id);
 			}
