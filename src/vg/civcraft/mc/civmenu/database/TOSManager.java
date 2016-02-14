@@ -1,5 +1,6 @@
 package vg.civcraft.mc.civmenu.database;
 
+import java.util.UUID;
 import java.util.logging.Level;
 
 import org.bukkit.Bukkit;
@@ -51,6 +52,16 @@ public class TOSManager {
 	public static boolean addPlayer(Player p, String term) {
 		if (manager != null) {
 			manager.addPlayer(p, term);
+		} else {
+			return false;
+		}
+		
+		return true;
+	}
+	
+	public static boolean setUUID(UUID uuid, String term){
+		if (manager != null) {
+			manager.setUUID(uuid, term);
 		} else {
 			return false;
 		}
