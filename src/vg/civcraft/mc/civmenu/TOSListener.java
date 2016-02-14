@@ -84,14 +84,6 @@ public class TOSListener implements Listener {
 		}
 	}
 	
-	@EventHandler
-	public void playerRespawnEvent(PlayerRespawnEvent e) {
-		Player p = e.getPlayer();
-		if (!TOSManager.isTermPlayer(p, "CivMenu Agreement")) {
-			locations.remove(p.getUniqueId());
-		}
-	}
-	
 	@CivConfigs({
 		@CivConfig(name = "terms.title.title" , def = "Welcome to Civcraft!", type = CivConfigType.String),
 		@CivConfig(name = "terms.subtitle" , def = "You need to agree to the TOS in chat", type = CivConfigType.String),
