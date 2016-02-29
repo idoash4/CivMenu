@@ -79,7 +79,7 @@ public class CivMenu extends ACivMod {
 			menu.setSubTitle(new TextComponent(plugin.getDescription()
 					.getDescription()));
 		}
-		if (plugin.getDescription.getCommands() != null) {
+		if (plugin.getDescription().getCommands() != null) {
 			for (String commandName : plugin.getDescription().getCommands()
 					.keySet()) {
 				Command command = plugin.getCommand(commandName);
