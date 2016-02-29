@@ -79,25 +79,26 @@ public class CivMenu extends ACivMod {
 			menu.setSubTitle(new TextComponent(plugin.getDescription()
 					.getDescription()));
 		}
-		
-		for (String commandName : plugin.getDescription().getCommands()
-				.keySet()) {
-			Command command = plugin.getCommand(commandName);
-			if (command.getPermission() != null
-					&& !player.hasPermission(command.getPermission())) {
-				continue;
+		if (plugin.getDescription.getCommands() != null) {
+			for (String commandName : plugin.getDescription().getCommands()
+					.keySet()) {
+				Command command = plugin.getCommand(commandName);
+				if (command.getPermission() != null
+						&& !player.hasPermission(command.getPermission())) {
+					continue;
+				}
+				TextComponent part = new TextComponent(command.getLabel());
+				part.setColor(ChatColor.YELLOW);
+				part.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
+						new ComponentBuilder(command.getUsage() + " \n"
+								+ command.getDescription()).create()));
+				part.setClickEvent(new ClickEvent(
+						ClickEvent.Action.SUGGEST_COMMAND, "/" + command.getLabel()));
+	
+				menu.addPart(part);
 			}
-			TextComponent part = new TextComponent(command.getLabel());
-			part.setColor(ChatColor.YELLOW);
-			part.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
-					new ComponentBuilder(command.getUsage() + " \n"
-							+ command.getDescription()).create()));
-			part.setClickEvent(new ClickEvent(
-					ClickEvent.Action.SUGGEST_COMMAND, "/" + command.getLabel()));
-
-			menu.addPart(part);
 		}
-
+		
 		menu.sendPlayer(player);
     	
     }
