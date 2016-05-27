@@ -10,6 +10,7 @@ import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import vg.civcraft.mc.civmenu.database.TOSManager;
+import vg.civcraft.mc.civmenu.donators.DonatorDataFileLoader;
 import vg.civcraft.mc.civmenu.guides.DismissalCacheListener;
 import vg.civcraft.mc.civmenu.guides.ResponseManager;
 import vg.civcraft.mc.civmodcore.ACivMod;
@@ -27,6 +28,7 @@ public class CivMenu extends ACivMod {
 		super.onEnable();
 		plugin = this;
 		tosManager = new TOSManager(this);
+		DonatorDataFileLoader.loadDataAndInitEverything();
 		ResponseManager.initWildcardDismissals();
 		getServer().getPluginManager().registerEvents(new TOSListener(), this);
 		getServer().getPluginManager().registerEvents(new DismissalCacheListener(), this);
