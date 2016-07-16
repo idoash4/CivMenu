@@ -4,6 +4,10 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 
+import vg.civcraft.mc.civmodcore.annotations.CivConfig;
+import vg.civcraft.mc.civmodcore.annotations.CivConfigType;
+import vg.civcraft.mc.civmodcore.annotations.CivConfigs;
+
 public class DonatorListener implements Listener {
 
 	private IPlayerDonationNotifier notifier;
@@ -14,6 +18,9 @@ public class DonatorListener implements Listener {
 	}
 
 	@EventHandler
+	@CivConfigs({
+		@CivConfig(name = "donationNotifcation", def = "false", type = CivConfigType.Bool),
+	})
 	public void playerLogin(PlayerJoinEvent e) {
 		if (System.currentTimeMillis() - e.getPlayer().getFirstPlayed() < firstJoinDelay) {
 			// dont show messages during first 10 min to not possibly override
