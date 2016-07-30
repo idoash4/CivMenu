@@ -29,16 +29,14 @@ public class TOSListener implements Listener {
 	private CivMenu plugin = CivMenu.getInstance();
 	private Map<UUID, Location> locations;
 	private Config config = plugin.GetConfig();
-	private CivMenuAPI api;
-
+	
 	public TOSListener() {
 		locations = new ConcurrentHashMap<UUID, Location>();
-		api = CivMenuAPI.getInstance();
 	}
 	
 	@CivConfigs({
 		@CivConfig(name = "terms.kickDelay", def = "1200", type = CivConfigType.Int),
-		@CivConfig(name = "terms.kickMessage", def = "You must accept the terms in order to play", type = CivConfigType.String)
+		@CivConfig(name = "terms.kickMessage", def = "You must accept the terms using /sign in order to play.", type = CivConfigType.String)
 	})
 	@EventHandler
 	public void playerJoinEvent(PlayerJoinEvent event) {
@@ -60,6 +58,14 @@ public class TOSListener implements Listener {
 		}
 	}
 	
+	@EventHandler
+	public void playerRespawnEvent(PlayerRespawnEvent e) {
+		Player p = e.getPlayer();
+		if (!TOSManager.isTermPlayer(p, "CivMenu Agreement")) {
+			locations.put(p.getUniqueId(), e.getRespawnLocation());
+		}
+	}
+	
 	@CivConfig(name = "terms.MovementRange", def = "15", type = CivConfigType.Int)
 	@EventHandler
 	public void playerMoveEvent(PlayerMoveEvent event) {
@@ -78,27 +84,22 @@ public class TOSListener implements Listener {
 		}
 	}
 	
-	@EventHandler
-	public void playerRespawnEvent(PlayerRespawnEvent e) {
-		Player p = e.getPlayer();
-		if (!TOSManager.isTermPlayer(p, "CivMenu Agreement")) {
-			locations.remove(p.getUniqueId());
-		}
-	}
-	
-
 	@CivConfigs({
-		@CivConfig(name = "terms.title" , def = "Welcome to Civcraft!", type = CivConfigType.String),
+		@CivConfig(name = "terms.title.title" , def = "Welcome to Civcraft!", type = CivConfigType.String),
+		@CivConfig(name = "terms.subtitle" , def = "You need to agree to the TOS in chat", type = CivConfigType.String),
 		@CivConfig(name = "terms.message", def = "Civcraft is an experiment for communities, political ideologies, debate and discussion. Before you can start playing and join a civilization you must first read and agree to the terms of service", type = CivConfigType.String),
 		@CivConfig(name = "terms.link", def = "http://www.google.com", type = CivConfigType.String),
 		@CivConfig(name = "terms.linkMessage" , def = "You can click this message to open up the terms of service.", type = CivConfigType.String),
 		@CivConfig(name = "terms.confirm", def = "Once you've read it, you can click this message to agree to the terms", type = CivConfigType.String),
+		@CivConfig(name = "terms.title.fadeIn" , def = "20", type = CivConfigType.Int),
+		@CivConfig(name = "terms.title.stay" , def = "200", type = CivConfigType.Int),
+		@CivConfig(name = "terms.title.fadeOut" , def = "20", type = CivConfigType.Int)
 	})
 	public void sendTOS(Player p) {
 
 		Menu menu = new Menu();
 
-		TextComponent welcome = new TextComponent(config.get("terms.title").getString());
+		TextComponent welcome = new TextComponent(config.get("terms.title.title").getString());
 		welcome.setColor(ChatColor.YELLOW);
 		menu.setTitle(welcome);
 
@@ -117,6 +118,11 @@ public class TOSListener implements Listener {
 		confirm.setItalic(true);
 		menu.addPart(confirm);
 		
-		api.performAction(p, menu);
+		menu.sendPlayer(p);
+		
+		Title title = new Title(config.get("terms.title.title").getString(), config.get("terms.subtitle").getString(),
+				config.get("terms.title.fadeIn").getInt(), config.get("terms.title.stay").getInt(),
+				config.get("terms.title.fadeOut").getInt());
+		title.sendTitle(p);
 	}
 }
