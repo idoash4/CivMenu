@@ -93,18 +93,26 @@ public class MysqlManager implements ISaveLoad{
 	}
 
 	@Override
-	public void addPlayer(Player p, String term) {
-		if (!registeredPlayers.containsKey(p.getUniqueId()))
-			registeredPlayers.put(p.getUniqueId(), new TermObject(p.getUniqueId()));
-		registeredPlayers.get(p.getUniqueId()).addTerm(term);
-		PreparedStatement addPlayer = db.prepareStatement(insertData);
-		try {
-			addPlayer.setString(1, p.getUniqueId().toString());
-			addPlayer.setString(2, term);
-			addPlayer.execute();
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+	public void addPlayer(Player p, final String term) {
+		final UUID uuid = p.getUniqueId();
+		if (!registeredPlayers.containsKey(uuid)){
+			registeredPlayers.put(uuid, new TermObject(uuid));
+			plugin.getServer().getScheduler().runTaskAsynchronously(plugin, new Runnable(){
+
+				@Override
+				public void run() {
+					final PreparedStatement addPlayer = db.prepareStatement(insertData);
+					try {
+						addPlayer.setString(1, uuid.toString());
+						addPlayer.setString(2, term);
+						addPlayer.execute();
+					} catch (SQLException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}					
+				}
+				
+			});
 		}
 	}
 	

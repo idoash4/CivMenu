@@ -108,7 +108,7 @@ public class Database {
 	 * @return PreparedStatement
 	 * @throws SQLException
 	 */
-	public PreparedStatement prepareStatement(String sqlStatement) {
+	public synchronized PreparedStatement prepareStatement(String sqlStatement) {
 		try {
 			if(!isConnected()) {
 				connect();
